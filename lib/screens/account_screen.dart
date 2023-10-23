@@ -1,0 +1,24 @@
+import 'package:smart_therapy/screens/login_screen.dart';
+import 'package:smart_therapy/screens/user_account_screen.dart';
+import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
+
+class AccountScreen extends StatefulWidget {
+  const AccountScreen({super.key});
+
+  @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  @override
+  Widget build(BuildContext context) {
+    if (Provider.of<AuthProvider>(context).currentUser != null) {
+      return UserAccountScreen(passedUserId: Provider.of<AuthProvider>(context).currentUser!.uid);
+    } else {
+      return const LoginScreen();
+    }
+  }
+}

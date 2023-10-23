@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "328539366950",
+    "project_id": "smart-therapy-92a99",
+    "storage_bucket": "smart-therapy-92a99.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:328539366950:android:22ebcd6dfe63506b2e68e7",
+        "android_client_info": {
+          "package_name": "com.example.smart_therapy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALKeF7HBs4aoi-TTUNJrlAVldq8YpXXyI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
