@@ -157,6 +157,7 @@ class _statsWidgetState extends State<statsWidget> {
         Row(
           children: [
             Expanded(child: statsCard(name: 'Chin to Chest', maxProgress: 60, progress:widget.exercise.chinToChest,)),
+            const Expanded(child: SizedBox())
             // statsCard(valueNotifier: _valueNotifier, name: 'Exercise', maxProgress: 80, progress: 60,),
           ],
         ),
