@@ -532,7 +532,7 @@ class _BookingScreenState extends State<BookingScreen> {
       'phone': _phoneController.text,
       'description': _descriptionController.text,
       'doctor': _doctorController.text,
-      'userId': FirebaseAuth.instance.currentUser?.uid??"",
+      'userId': FirebaseAuth.instance.currentUser!.uid,
       'date': DateTime.parse(dateUTC + ' ' + date_Time + ':00'),
     }, SetOptions(merge: true));
   }

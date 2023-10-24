@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 import 'package:provider/provider.dart';
+import 'package:smart_therapy/providers/exerciseServices.dart';
 import '../models/exercise_item.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cloudstore_provider.dart';
@@ -27,8 +30,43 @@ class ExerciseDetailsScreen extends StatefulWidget {
 }
 
 class _ExerciseDetailsScreenState extends State<ExerciseDetailsScreen> {
+  bool isRunning = false;
+  int seconds = 0;
+  late Timer timer;
+
+  Future<void> startTimer() async {
+    setState(() {
+      seconds = 0;
+    });
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      setState(() {
+        seconds += 1;
+        isRunning=true;
+      });
+    });
+    bool isAvailableToday = await ExerciseServices().checkExerciseForToday();
+    print(isAvailableToday);
+    if(!isAvailableToday){
+      await ExerciseServices().addExercise();
+    }
+  }
+
+  Future<void> stopTimer() async {
+    timer.cancel();
+    setState(() {
+      isRunning = false;
+    });
+    double value = await ExerciseServices().getSpecificExerciseData(widget.passedExerciseItem.exItemId);
+    print(value);
+    value = value+ double.parse((seconds/60).toStringAsFixed(1));
+    print(value);
+        await ExerciseServices().update(widget.passedExerciseItem.exItemId, value, ExerciseServices().extractDateComponents(DateTime.now()));
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    String formattedTime = '${(seconds ~/ 3600).toString().padLeft(2, '0')}:${((seconds % 3600) ~/ 60).toString().padLeft(2, '0')}:${(seconds % 60).toString().padLeft(2, '0')}';
     // List<ExerciseItem> filteredExercises =
     //     Provider.of<ExerciseListProvider>(context).getFilteredExerciseList([widget.exerciseId]);
     // finalExercise = filteredExercises[0];
@@ -232,6 +270,35 @@ class _ExerciseDetailsScreenState extends State<ExerciseDetailsScreen> {
                           ),
                           Text(
                             'Search the Web',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Visibility(
+                      visible: isRunning,
+                        child: Column(
+                      children: [
+                        SizedBox(height: 20),
+                        Text(
+                          formattedTime,
+                          style: TextStyle(fontSize: 40),
+                        ),
+                      ],
+                    )),
+                    CustomElevatedButton(
+                      onPressed: (){
+                        !isRunning?startTimer():stopTimer();
+                      },
+                      child: Row(
+                        children: [
+                          Icon(!isRunning?Icons.play_arrow_rounded:Icons.pause),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            !isRunning?'Start Exercise':'Stop Exercise',
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],

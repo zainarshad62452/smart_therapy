@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:smart_therapy/main.dart';
 import 'package:smart_therapy/screens/bookingScreen.dart';
+import 'package:smart_therapy/screens/login_screen.dart';
 
 import '../models/doctorModel.dart';
 
@@ -42,7 +45,6 @@ class DoctorListTile extends StatelessWidget {
       elevation: 4, // Add elevation for a shadow effect
       margin: EdgeInsets.only(bottom: 16), // Add margin between list tiles
       child: ListTile(
-        onTap: ()=>Get.to(()=>BookingScreen(doctor: doctor.docName,)),
         contentPadding: EdgeInsets.all(16), // Add padding inside the ListTile
         title: Text(doctor.docName),
         subtitle: Column(
@@ -52,6 +54,17 @@ class DoctorListTile extends StatelessWidget {
             Text(doctor.address),
           ],
         ),
+        trailing: MaterialButton(onPressed: ()
+        {
+          if(FirebaseAuth.instance.currentUser !=null){
+          Get.to(()=>BookingScreen(doctor: doctor.docName,));
+          }else{
+            showDialog(context: context, builder: (ctx)=>AlertDialog(title: Text("Please login inorder to book an Appointment"),actions: [
+              TextButton(onPressed: ()=>Get.to(()=>const LoginScreen()), child: Text("Login")),
+              TextButton(onPressed: ()=>Navigator.pop(context), child: Text("Cancel")),
+            ],));
+          }
+        },child: Text("Book Appointment",style: TextStyle(color: Colors.white),),color: kMainColor,),
       ),
     );
   }

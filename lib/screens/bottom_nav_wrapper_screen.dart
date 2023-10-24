@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
 import 'package:provider/provider.dart';
+import 'package:smart_therapy/screens/statsScreen.dart';
 import '../providers/auth_provider.dart';
 
 import '../main.dart';
@@ -28,6 +29,7 @@ class _BottomNavWrapperScreenState extends State<BottomNavWrapperScreen> {
     {"page": HomeScreen(cameras)},
     {"page": const SearchScreen()},
     {"page": const UserExercisesScreen()},
+    {"page": const StatsScreen()},
   ];
 
   int _selectedScreenIndex = 0;
@@ -66,6 +68,15 @@ class _BottomNavWrapperScreenState extends State<BottomNavWrapperScreen> {
                   size: 26,
                 ),
                 label: 'My Exercises',
+              ),
+
+            if (Provider.of<AuthProvider>(context).currentUser != null)
+              const BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.query_stats,
+                  size: 26,
+                ),
+                label: 'Stats',
               ),
           ],
           currentIndex: _selectedScreenIndex,

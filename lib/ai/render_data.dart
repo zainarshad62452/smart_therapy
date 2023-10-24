@@ -387,10 +387,10 @@ class _RenderDataState extends State<RenderData> {
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: TimerWidget(),
-        ),
+        // Align(
+        //   alignment: Alignment.topCenter,
+        //   child: TimerWidget(),
+        // ),
       ],
     );
   }

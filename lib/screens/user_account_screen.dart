@@ -113,43 +113,43 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: CustomCard(
-                                  child: Text(
-                                    'Gender: Male',
-                                    style: Theme.of(context).textTheme.bodyMedium,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
+                              // const SizedBox(width: 20),
+                              // Expanded(
+                              //   child: CustomCard(
+                              //     child: Text(
+                              //       'Gender: Male',
+                              //       style: Theme.of(context).textTheme.bodyMedium,
+                              //       textAlign: TextAlign.center,
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(
-                                child: CustomCard(
-                                  child: Text(
-                                    'Height: 5 ft, 6 in',
-                                    style: Theme.of(context).textTheme.bodyMedium,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: CustomCard(
-                                  child: Text(
-                                    'Weight: 75Kg',
-                                    style: Theme.of(context).textTheme.bodyMedium,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          // const SizedBox(height: 20),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //   children: [
+                          //     Expanded(
+                          //       child: CustomCard(
+                          //         child: Text(
+                          //           'Height: 5 ft, 6 in',
+                          //           style: Theme.of(context).textTheme.bodyMedium,
+                          //           textAlign: TextAlign.center,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     const SizedBox(width: 20),
+                          //     Expanded(
+                          //       child: CustomCard(
+                          //         child: Text(
+                          //           'Weight: 75Kg',
+                          //           style: Theme.of(context).textTheme.bodyMedium,
+                          //           textAlign: TextAlign.center,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           const SizedBox(height: 60),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -170,22 +170,22 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                                   fontSize: 18,
                                 ),
                               ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: CustomElevatedButton(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 16,
-                                  ),
-                                  onPressed: () => {
-                                    debugPrint('Edit Details Pressed'),
-                                  },
-                                  icon: Icons.edit,
-                                  iconSize: 20,
-                                  title: 'Edit Details',
-                                  fontSize: 18,
-                                ),
-                              ),
+                              // const SizedBox(width: 20),
+                              // Expanded(
+                              //   child: CustomElevatedButton(
+                              //     padding: const EdgeInsets.symmetric(
+                              //       vertical: 10,
+                              //       horizontal: 16,
+                              //     ),
+                              //     onPressed: () => {
+                              //       debugPrint('Edit Details Pressed'),
+                              //     },
+                              //     icon: Icons.edit,
+                              //     iconSize: 20,
+                              //     title: 'Edit Details',
+                              //     fontSize: 18,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ],
