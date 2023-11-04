@@ -6,6 +6,7 @@ import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 import 'package:provider/provider.dart';
 import 'package:smart_therapy/providers/exerciseServices.dart';
+import 'package:text_to_speech/text_to_speech.dart';
 import '../models/exercise_item.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cloudstore_provider.dart';
@@ -19,10 +20,12 @@ import '../screens/webview_screen.dart';
 
 class ExerciseDetailsScreen extends StatefulWidget {
   final ExerciseItem passedExerciseItem;
+  final bool isTTS;
 
   const ExerciseDetailsScreen({
     Key? key,
     required this.passedExerciseItem,
+    required this.isTTS
   }) : super(key: key);
 
   @override
@@ -34,10 +37,18 @@ class _ExerciseDetailsScreenState extends State<ExerciseDetailsScreen> {
   int seconds = 0;
   late Timer timer;
 
+
   Future<void> startTimer() async {
     setState(() {
       seconds = 0;
     });
+    if(widget.isTTS) {
+      String a = "";
+      for(var items in widget.passedExerciseItem.exItemProcedure){
+        a = "$a. $items";
+      }
+      tts.speak(a);
+    }
     timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
       setState(() {
         seconds += 1;
@@ -62,10 +73,30 @@ class _ExerciseDetailsScreenState extends State<ExerciseDetailsScreen> {
     print(value);
         await ExerciseServices().update(widget.passedExerciseItem.exItemId, value, ExerciseServices().extractDateComponents(DateTime.now()));
   }
+  TextToSpeech tts = TextToSpeech();
+
+  @override
+  void initState() {
+    if(widget.isTTS) {
+      String a = "${widget.passedExerciseItem.exItemDescription}. Tap on the following steps to get the details. Steps to perform.";
+      for(var items in widget.passedExerciseItem.exItemProcedure){
+        a = "$a. $items";
+      }
+      tts.speak(a);
+    }
+    super.initState();
+  }
+  @override
+  void dispose() {
+    tts.stop();
+    super.dispose();
+  }
 
 
   @override
   Widget build(BuildContext context) {
+
+
     String formattedTime = '${(seconds ~/ 3600).toString().padLeft(2, '0')}:${((seconds % 3600) ~/ 60).toString().padLeft(2, '0')}:${(seconds % 60).toString().padLeft(2, '0')}';
     // List<ExerciseItem> filteredExercises =
     //     Provider.of<ExerciseListProvider>(context).getFilteredExerciseList([widget.exerciseId]);
@@ -99,18 +130,23 @@ class _ExerciseDetailsScreenState extends State<ExerciseDetailsScreen> {
                   children: [
                     const CustomDivider(),
                     const SizedBox(height: 10),
-                    CustomCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Summary',
-                            style: Theme.of(context).textTheme.displaySmall,
-                          ),
-                          const CustomDivider(),
-                          Text(widget.passedExerciseItem.exItemDescription,
-                              style: Theme.of(context).textTheme.bodyMedium),
-                        ],
+                    GestureDetector(
+                      onTap: (){
+                        tts.speak(widget.passedExerciseItem.exItemDescription);
+                      },
+                      child: CustomCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Summary',
+                              style: Theme.of(context).textTheme.displaySmall,
+                            ),
+                            const CustomDivider(),
+                            Text(widget.passedExerciseItem.exItemDescription,
+                                style: Theme.of(context).textTheme.bodyMedium),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -128,26 +164,31 @@ class _ExerciseDetailsScreenState extends State<ExerciseDetailsScreen> {
                               .asMap()
                               .entries
                               .map(
-                                (eachStep) => CustomCard(
-                                  color: const Color(0xff4d4d4d),
-                                  padding: const EdgeInsets.all(8.0),
-                                  margin: const EdgeInsets.only(bottom: 8.0),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${eachStep.key + 1}) ',
-                                        style: Theme.of(context).textTheme.bodyMedium,
-                                      ),
-                                      const SizedBox(width: 5),
-                                      Expanded(
-                                        child: Text(
-                                          eachStep.value,
+                                (eachStep) => GestureDetector(
+                                  onTap: (){
+                                    tts.speak('${eachStep.key + 1}) ${eachStep.value}');
+                                  },
+                                  child: CustomCard(
+                                    color: const Color(0xff4d4d4d),
+                                    padding: const EdgeInsets.all(8.0),
+                                    margin: const EdgeInsets.only(bottom: 8.0),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${eachStep.key + 1}) ',
                                           style: Theme.of(context).textTheme.bodyMedium,
-                                          textAlign: TextAlign.start,
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(width: 5),
+                                        Expanded(
+                                          child: Text(
+                                            eachStep.value,
+                                            style: Theme.of(context).textTheme.bodyMedium,
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )

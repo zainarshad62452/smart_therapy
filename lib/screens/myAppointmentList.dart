@@ -5,6 +5,10 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_therapy/main.dart';
+import 'package:smart_therapy/screens/doctorsScreen.dart';
+
+import '../models/doctorModel.dart';
 
 class MyAppointmentList extends StatefulWidget {
   @override
@@ -29,13 +33,13 @@ class _MyAppointmentListState extends State<MyAppointmentList> {
 
   String _dateFormatter(String _timestamp) {
     String formattedDate =
-        DateFormat('dd-MM-yyyy').format(DateTime.parse(_timestamp));
+    DateFormat('dd-MM-yyyy').format(DateTime.parse(_timestamp));
     return formattedDate;
   }
 
   String _timeFormatter(String _timestamp) {
     String formattedTime =
-        DateFormat('kk:mm').format(DateTime.parse(_timestamp));
+    DateFormat('kk:mm').format(DateTime.parse(_timestamp));
     return formattedTime;
   }
 
@@ -85,7 +89,7 @@ class _MyAppointmentListState extends State<MyAppointmentList> {
 
   _compareDate(String _date) {
     if (_dateFormatter(DateTime.now().toString())
-            .compareTo(_dateFormatter(_date)) ==
+        .compareTo(_dateFormatter(_date)) ==
         0) {
       return true;
     } else {
@@ -102,28 +106,52 @@ class _MyAppointmentListState extends State<MyAppointmentList> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('PendingAppointments')
-            .orderBy('date')
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          return snapshot.data!.size == 0
-              ? Center(
-                  child: Text(
-                    'No Appointment Scheduled',
-                    style: GoogleFonts.lato(
-                      color: Colors.grey,
-                      fontSize: 18,
-                    ),
+      child: Padding(
+        padding: const EdgeInsets.all(28.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                const SizedBox(width: 10),
+                Text(
+                  'Appointments & Remainders',
+                  style: Theme.of(context).textTheme.displayLarge,
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0,),
+            StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('PendingAppointments')
+                  .orderBy('date')
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return snapshot.data!.size == 0
+                    ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'No Appointment Scheduled',
+                        style: GoogleFonts.lato(
+                          color: Colors.grey,
+                          fontSize: 18,
+                        ),
+                      ),
+                      SizedBox(height: 20.0,),
+                      MaterialButton(
+                        color: kMainColor,
+                        onPressed: () =>Get.to(()=>DoctorListScreen())
+                        ,child: Text("Book Appointment",style: TextStyle(color: Colors.white),),)
+                    ],
                   ),
                 )
-              : ListView.builder(
+                    : ListView.builder(
                   scrollDirection: Axis.vertical,
                   physics: ClampingScrollPhysics(),
                   shrinkWrap: true,
@@ -210,22 +238,24 @@ class _MyAppointmentListState extends State<MyAppointmentList> {
                                                 fontSize: 16,
                                               ),
                                             ),
+                                            Text(
+                                              document['appointmentType']=="On Home"?"Home Service":"At Hospital",
+                                              style: GoogleFonts.lato(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
                                           ],
-                                        ),
-                                        IconButton(
-                                          tooltip: 'Delete Appointment',
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Colors.black87,
-                                          ),
-                                          onPressed: () {
-                                            print(">>>>>>>>>" + document.id);
-                                            _documentID = document.id;
-                                            showAlertDialog(context);
-                                          },
                                         ),
                                       ],
                                     ),
+                                    !bool.parse(document['isRated'].toString())?
+                                    ExpansionTile(title: Text("Give Rating To Doctor"),
+                                      children: [
+                                        RatingWidget(uid: document['doctorUid'].toString(),id: document['id'].toString(),),
+                                      ],):SizedBox(),
                                   ],
                                 ),
                               ),
@@ -239,8 +269,82 @@ class _MyAppointmentListState extends State<MyAppointmentList> {
 
                   },
                 );
-        },
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
+
+class RatingWidget extends StatefulWidget {
+  String? uid;
+  String? id;
+  RatingWidget({this.uid,this.id});
+
+  @override
+  _RatingWidgetState createState() => _RatingWidgetState();
+}
+
+class _RatingWidgetState extends State<RatingWidget> {
+  double _rating = 0.0;
+
+  Future<void> _saveRatingToFirestore() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('doctors')
+          .doc(widget.uid)
+          .update({'rating': _rating});
+      await FirebaseFirestore.instance
+          .collection('PendingAppointments')
+          .doc(widget.id)
+          .update({'isRated': true});
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Rating saved successfully.'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error saving rating.'),
+        ),
+      );
+    }
+  }
+
+  Widget _buildStar(int starIndex) {
+    return IconButton(
+      onPressed: () {
+        setState(() {
+          _rating = starIndex + 1;
+        });
+      },
+      icon: Icon(
+        starIndex < _rating ? Icons.star : Icons.star_border,
+        color: Colors.indigo,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(5, (index) => _buildStar(index)),
+        ),
+        MaterialButton(
+          color: Colors.tealAccent.shade700,
+          textColor: Colors.white,
+          onPressed: _rating > 0 ? _saveRatingToFirestore : null,
+          child: Text('Submit Rating'),
+        ),
+      ],
+    );
+  }
+}
+

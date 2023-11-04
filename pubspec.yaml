@@ -46,9 +46,11 @@ dependencies:
   webview_flutter: ^3.0.4
   camera: ^0.10.3+2
   tflite: ^1.1.2
+  text_to_speech:
   photo_view: ^0.14.0
   url_launcher: ^6.1.10
   dashed_circular_progress_bar:
+  typicons_flutter: ^0.5.0
 
 dev_dependencies:
   flutter_test:

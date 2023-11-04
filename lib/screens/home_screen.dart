@@ -122,71 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
-                // SizedBox(
-                //   height: 400,
-                //   child: CustomCard(
-                //     child: Stack(
-                //       children: [
-                //         ModelViewer(
-                //           src: 'assets/3d_models/tpose.glb',
-                //           autoRotate: false,
-                //           cameraControls: true,
-                //           disableZoom: true,
-                //           disablePan: true,
-                //           ar: false,
-                //         ),
-                //         Positioned(
-                //           top: 0,
-                //           left: 0,
-                //           child: CustomTextButton(
-                //             onPressed: () => {},
-                //             childPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
-                //             title: 'Neck',
-                //           ),
-                //         ),
-                //         Positioned(
-                //           top: 0,
-                //           right: 0,
-                //           child: CustomTextButton(
-                //             onPressed: () => {},
-                //             childPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
-                //             title: 'Shoulder',
-                //           ),
-                //         ),
-                //         Positioned(
-                //           bottom: 0,
-                //           left: 0,
-                //           child: CustomTextButton(
-                //             onPressed: () => {},
-                //             childPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
-                //             title: 'Back',
-                //           ),
-                //         ),
-                //         Positioned(
-                //           bottom: 0,
-                //           right: 0,
-                //           child: CustomTextButton(
-                //             onPressed: () => {},
-                //             childPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 4),
-                //             title: 'Hamstring',
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                // const SizedBox(height: 20),
-                // CustomElevatedButton(
-                //   onPressed: () => {
-                //     Navigator.of(context).push(
-                //       MaterialPageRoute(
-                //         builder: (context) => const ModelViewerScreen(),
-                //       ),
-                //     )
-                //   },
-                //   icon: Icons.view_in_ar,
-                //   title: 'Try 3D & AR Demo',
-                // ),
                 const SizedBox(height: 20),
                 CustomCard(
                   child: Text(
@@ -217,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () => {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const ExercisesScreen(),
+                        builder: (context) => const ExercisesScreen(isTTS: false,),
                       ),
                     )
                   },
@@ -228,6 +163,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Browse Exercises',
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
+                  ),
+                ),
+
+                const SizedBox(height: 20.0),
+                CustomElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>  const ExercisesScreen(isTTS: true,),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      const Icon(Icons.disabled_visible_sharp),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Disable Section',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -275,7 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 20.0),
                 CustomElevatedButton(
-                  // onPressed: () => onSelectS(context: context, modelName: 'posenet'),
                   onPressed: () async {
                     try {
                       List<CameraDescription>? new_cameras = await availableCameras();
@@ -332,27 +289,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       print('Error: $e.code\nError Message: $e.message');
                     }
                   },
-                  // onPressed: () => {
-                  //   Navigator.of(context).push(
-                  //     MaterialPageRoute(
-                  //       builder: (context) => PushedPageS(
-                  //         cameras: cameras!,
-                  //         title: 'posenet',
-                  //       ),
-                  //     ),
-                  //   )
-                  // },
                   icon: Icons.camera_alt,
                   title: 'Detect Your Pose',
                 ),
                 const SizedBox(height: 20.0),
-                // Provider.of<AuthProvider>(context).currentUser != null
-                //     ? CustomElevatedButton(
-                //         onPressed: () => {},
-                //         trailingIcon: Icons.arrow_forward,
-                //         title: 'Continue Treatment',
-                //       )
-                //     : Container(),
               ],
             ),
           ),
@@ -360,8 +300,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // void onSelectS({required BuildContext context, required String modelName}) async {
-
-  // }
 }

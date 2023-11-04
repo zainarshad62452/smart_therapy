@@ -65,7 +65,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   onPressed: () => {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const ExercisesScreen(),
+                        builder: (context) => const ExercisesScreen(isTTS: false,),
                       ),
                     )
                   },

@@ -45,7 +45,7 @@ class ARTherapy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'AR Therapy',
+      title: 'Smart Therapy',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
@@ -82,13 +82,6 @@ class ARTherapy extends StatelessWidget {
           ),
         ),
       ),
-      // builder: (context, child) {
-      //   return MediaQuery(
-      //       data: MediaQuery.of(context).copyWith(
-      //         textScaleFactor: 1.0,
-      //       ),
-      //       child: const HomeScreen());
-      // }
       home: SplashScreen(cameras: cameras!,),
     );
   }

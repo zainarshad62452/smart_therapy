@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:text_to_speech/text_to_speech.dart';
 import '../providers/exercise_list_provider.dart';
 
 import 'exercise_details_screen.dart';
@@ -10,13 +11,29 @@ import '../widgets/custom_card.dart';
 import '../widgets/custom_list_item.dart';
 
 class ExercisesScreen extends StatefulWidget {
-  const ExercisesScreen({super.key});
+  final bool isTTS;
+  const ExercisesScreen({super.key,required this.isTTS});
 
   @override
   State<ExercisesScreen> createState() => _ExercisesScreenState();
 }
 
 class _ExercisesScreenState extends State<ExercisesScreen> {
+  TextToSpeech tts = TextToSpeech();
+
+  @override
+  void initState() {
+    if(widget.isTTS){
+      tts.speak("Browse through various exercises and tap to view their 3D and AR View. Select any exercise from below exercises to perform step by step");
+    }
+    super.initState();
+  }
+  @override
+  void dispose() {
+    tts.stop();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +80,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                                 MaterialPageRoute(
                                   builder: (context) => ExerciseDetailsScreen(
                                       passedExerciseItem: Provider.of<ExerciseListProvider>(context, listen: false)
-                                          .globalExerciseList[exerciseIndex]),
+                                          .globalExerciseList[exerciseIndex],isTTS: widget.isTTS,),
                                 ),
                               ),
                             },

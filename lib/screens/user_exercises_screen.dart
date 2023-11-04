@@ -107,6 +107,7 @@ class _UserExercisesScreenState extends State<UserExercisesScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => ExerciseDetailsScreen(
                                       passedExerciseItem: filteredExerciseList[exerciseIndex],
+                                      isTTS: false,
                                     ),
                                   ),
                                 );

@@ -14,6 +14,7 @@ import './user_exercises_screen.dart';
 // import './user_account_screen.dart';
 // import './wip_screen.dart';
 import '../widgets/custom_card.dart';
+import 'myAppointmentList.dart';
 
 class BottomNavWrapperScreen extends StatefulWidget {
   List<CameraDescription>? cameras;
@@ -28,6 +29,9 @@ class _BottomNavWrapperScreenState extends State<BottomNavWrapperScreen> {
   final List<Map<String, Object>> _screenData = [
     {"page": HomeScreen(cameras)},
     {"page": const SearchScreen()},
+    {"page": Scaffold(
+      body: MyAppointmentList(),
+    )},
     {"page": const UserExercisesScreen()},
     {"page": const StatsScreen()},
   ];
@@ -59,6 +63,14 @@ class _BottomNavWrapperScreenState extends State<BottomNavWrapperScreen> {
                 size: 26,
               ),
               label: 'Search',
+            ),
+            if (Provider.of<AuthProvider>(context).currentUser != null)
+            const BottomNavigationBarItem(
+              icon: Icon(
+                Icons.access_time_rounded,
+                size: 26,
+              ),
+              label: 'Appointments & Remainders',
             ),
             // if (context.watch<AuthProvider>().currentUser != null)
             if (Provider.of<AuthProvider>(context).currentUser != null)

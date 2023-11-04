@@ -207,6 +207,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         MaterialPageRoute(
                                           builder: (context) => ExerciseDetailsScreen(
                                             passedExerciseItem: eachExerciseResult,
+                                            isTTS: false,
                                           ),
                                         ),
                                       ),

@@ -10,8 +10,9 @@ import 'myAppointments.dart';
 
 class BookingScreen extends StatefulWidget {
   final String? doctor;
+  final String? doctorUid;
 
-  const BookingScreen({ Key? key, this.doctor}) : super(key: key);
+  const BookingScreen({ Key? key, this.doctor,this.doctorUid}) : super(key: key);
   @override
   _BookingScreenState createState() => _BookingScreenState();
 }
@@ -37,7 +38,11 @@ class _BookingScreenState extends State<BookingScreen> {
   String timeText = 'Select Time';
   late String dateUTC;
   late String date_Time;
-
+  String? _selectedAppointmentType;
+  List<String> _appointmentTypes = [
+    'On Home',
+    'On Hospital',
+  ];
   FirebaseAuth _auth = FirebaseAuth.instance;
   late User user;
 
@@ -476,6 +481,43 @@ class _BookingScreenState extends State<BookingScreen> {
                         height: 40,
                       ),
                       Container(
+                        alignment: Alignment.center,
+                        height: 60,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[350],
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(90.0)),
+                          // borderSide: BorderSide.none,
+                        ),
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: DropdownButton<String>(
+                            value: _selectedAppointmentType,
+                            hint: Text('Select Appointment Type',style: GoogleFonts.lato(
+                                fontSize: 18, fontWeight: FontWeight.bold),),
+                            underline: Container(),
+                            icon: Icon(Icons.arrow_drop_down,color: Colors.indigo,), // Custom icon
+                            isExpanded: true,
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedAppointmentType = newValue;
+                              });
+                            },
+                            items: _appointmentTypes.map((String appointmentType) {
+                              return DropdownMenuItem<String>(
+                                value: appointmentType,
+                                child: Text(appointmentType,style: GoogleFonts.lato(
+                                    fontSize: 18, fontWeight: FontWeight.bold),),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Container(
                         height: 100,
                         width: MediaQuery.of(context).size.width,
                         child: ElevatedButton(
@@ -523,15 +565,18 @@ class _BookingScreenState extends State<BookingScreen> {
   Future<void> _createAppointment() async {
     print(dateUTC + ' ' + date_Time + ':00');
 
-   final newUser = FirebaseFirestore.instance
+    final newUser = FirebaseFirestore.instance
         .collection('PendingAppointments')
         .doc();
-        newUser.set({
+    newUser.set({
       'name': _nameController.text,
       'id': newUser.id,
       'phone': _phoneController.text,
       'description': _descriptionController.text,
       'doctor': _doctorController.text,
+      'appointmentType': _selectedAppointmentType,
+      'doctorUid': widget.doctorUid,
+      'isRated': false,
       'userId': FirebaseAuth.instance.currentUser!.uid,
       'date': DateTime.parse(dateUTC + ' ' + date_Time + ':00'),
     }, SetOptions(merge: true));
