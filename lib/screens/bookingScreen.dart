@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_therapy/main.dart';
 
+import '../providers/stripe.dart';
 import 'myAppointments.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -529,13 +530,18 @@ class _BookingScreenState extends State<BookingScreen> {
                               borderRadius: BorderRadius.circular(32.0),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              print(_nameController.text);
-                              print(_dateController.text);
-                              print(widget.doctor);
-                              showAlertDialog(context);
-                              _createAppointment();
+                              await StripeServices.instance.initialize();
+                              await StripeServices.instance.startPurchase(5,
+                                      (isSuccess, message) async {
+                                    if (isSuccess) {
+                                      showAlertDialog(context);
+                                      _createAppointment();
+                                    } else {
+
+                                    }
+                                  },context);
                             }
                           },
                           child: Text(
